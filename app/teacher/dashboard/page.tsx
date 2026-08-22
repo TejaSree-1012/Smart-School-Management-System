@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/styles/TeacherDashboard.module.css";
 import { motion, AnimatePresence } from "framer-motion";
+import NotificationBell from "@/app/components/admin/NotificationBell";
 import { 
   FaChalkboardTeacher, 
   FaUserGraduate, 
@@ -29,6 +30,7 @@ interface TodaySchedule {
   className: string;
   periodType: string;
   room: string;
+  periodNumber: number;
 }
 
 interface Alert {
@@ -59,13 +61,18 @@ interface DashboardData {
     experience?: number;
     department?: string;
     designation?: string;
+    assignedClasses?: string[];
+    assignedSubjects?: string[];
+    assignedClassSubjects?: Record<string, string[]>;
   };
   stats: {
     totalClasses: number;
     totalStudents: number;
     totalSubjects: number;
     todayClasses: number;
+    todayPeriods: number;
     subjects: string[];
+    classSubjects?: Record<string, string[]>;
   };
   todaySchedule: TodaySchedule[];
   alerts: Alert[];
@@ -79,6 +86,19 @@ export default function TeacherDashboard() {
   const [loadingData, setLoadingData] = useState(true);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
+  const getSubjectColor = (subject: string) => {
+    const colors: Record<string, string> = {
+      "Mathematics": "#3b82f6",
+      "Science": "#10b981",
+      "English": "#8b5cf6",
+      "Hindi": "#f59e0b",
+      "Social Science": "#06b6d4",
+      "Computer": "#6366f1",
+      "Sanskrit": "#ec4899"
+    }
+    return colors[subject] || "#64748b"
+  }
+
   useEffect(() => {
     fetchDashboardData();
     setCurrentTime(new Date());
@@ -86,11 +106,18 @@ export default function TeacherDashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  const isWeekend = currentTime && (currentTime.getDay() === 0);
+
   async function fetchDashboardData() {
     try {
       const res = await fetch("/api/teachers/dashboard-stats", {
         credentials: "include"
       });
+
+      if (res.status === 401) {
+        router.push("/login/teacher");
+        return;
+      }
 
       if (res.ok) {
         const dashboardData = await res.json();
@@ -234,6 +261,10 @@ export default function TeacherDashboard() {
             </div>
           </div>
 
+          <div className={styles.notificationWrapper}>
+            <NotificationBell />
+          </div>
+
           <button className={styles.logoutBtn} onClick={handleLogout} disabled={loggingOut}>
             <FaSignOutAlt />
             <span>{loggingOut ? "Logging out..." : "Logout"}</span>
@@ -303,7 +334,56 @@ export default function TeacherDashboard() {
         </motion.div>
       </div>
 
-      {data?.stats?.subjects && data.stats.subjects.length > 0 && (
+      {data?.teacher?.assignedClasses && data.teacher.assignedClasses.length > 0 && (
+        <motion.div 
+          className={styles.subjectsSection}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+        >
+          <div className={styles.subjectsHeader}>
+            <FaBook className={styles.subjectsIcon} />
+            <h3>My Classes & Subjects</h3>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "12px" }}>
+            {data.teacher.assignedClasses.map((cls, index) => (
+              <div 
+                key={index}
+                style={{
+                  background: "white",
+                  borderRadius: "10px",
+                  padding: "12px 16px",
+                  border: "1px solid #e2e8f0",
+                  minWidth: "180px"
+                }}
+              >
+                <div style={{ fontWeight: 700, color: "#1e3a5f", marginBottom: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <FaGraduationCap />
+                  {cls}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                  {data.teacher.assignedClassSubjects?.[cls]?.map((subject, subjIndex) => (
+                    <span 
+                      key={subjIndex}
+                      style={{
+                        fontSize: "11px",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: `${getSubjectColor(subject)}20`,
+                        color: getSubjectColor(subject)
+                      }}
+                    >
+                      {subject}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {(!data?.teacher?.assignedClasses || data.teacher.assignedClasses.length === 0) && data?.stats?.subjects && data.stats.subjects.length > 0 && (
         <motion.div 
           className={styles.subjectsSection}
           initial={{ opacity: 0, y: 20 }}
@@ -342,7 +422,7 @@ export default function TeacherDashboard() {
               </div>
             </div>
             <div className={styles.scheduleBadge}>
-              {data?.stats?.todayClasses || 0} Classes
+              {isWeekend ? "Weekend" : `${data?.stats?.todayPeriods || 0} Periods | ${data?.stats?.todayClasses || 0} Classes`}
             </div>
           </div>
           
@@ -379,7 +459,7 @@ export default function TeacherDashboard() {
                         
                         <div className={styles.scheduleCard}>
                           <div className={styles.scheduleTime}>
-                            <span className={styles.periodNumber}>P{index + 1}</span>
+                            <span className={styles.periodNumber}>P{schedule.periodNumber}</span>
                             <span className={styles.timeRange}>{schedule.time}</span>
                           </div>
                           
@@ -431,8 +511,8 @@ export default function TeacherDashboard() {
                 <div className={styles.emptyIcon}>
                   <FaCalendarAlt />
                 </div>
-                <h3>No Classes Scheduled Today</h3>
-                <p>Enjoy your free day! Check back tomorrow for your schedule.</p>
+                <h3>{isWeekend ? "No Classes Today (Sunday)" : "No Classes Scheduled Today"}</h3>
+                <p>{isWeekend ? "Enjoy your weekend! School resumes on Monday." : "Enjoy your free day! Check back tomorrow for your schedule."}</p>
               </motion.div>
             )}
           </div>

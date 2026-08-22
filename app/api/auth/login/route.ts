@@ -69,12 +69,26 @@ if(principal){
   }
 
   else if(role==="student"){
-   user = await Student.findOne({studentId,dob})
-  }
+    user = await Student.findOne({studentId,dob})
+   }
 
-  else if(role==="parent"){
-   user = await Parent.findOne({studentId,phone})
-  }
+else if(role==="parent"){
+     // Parent login uses student's phone + studentId to find corresponding student
+     const student = await Student.findOne({ 
+       studentId: new RegExp(`^${studentId}$`, 'i'),
+       phone: phone 
+     });
+     
+     if (student) {
+       user = {
+         _id: student._id,
+         name: student.fatherName || "Parent",
+         email: student.email,
+         phone: student.phone,
+         studentId: student.studentId
+       };
+     }
+   }
 
 
   if(!user){

@@ -11,9 +11,9 @@ import Students from "./components/Students";
 import Teachers from "./components/Teachers";
 import Parents from "./components/Parents";
 import Attendance from "./components/Attendance";
+import Marks from "./components/Marks";
 import Announcements from "@/app/components/admin/Announcements";
-import { FaHome, FaSignOutAlt, FaCalendarAlt, FaClock, FaBook } from "react-icons/fa";
-import Link from "next/link";
+import { FaHome, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa";
 
 export default function AdminDashboard() {
   const { logout, loading } = useLogout();
@@ -123,28 +123,7 @@ export default function AdminDashboard() {
 
         {activeTab === "Marks" && (
           <div className={styles.sectionFade}>
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <FaBook style={{ fontSize: '48px', color: '#f59e0b', marginBottom: '16px' }} />
-              <h2 style={{ margin: '0 0 12px 0', color: '#1e3a5f' }}>Marks Management</h2>
-              <p style={{ color: '#64748b', marginBottom: '20px' }}>View and manage student examination marks</p>
-              <Link 
-                href="/admin/marks" 
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 24px',
-                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                  color: 'white',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <FaBook /> Open Marks Management
-              </Link>
-            </div>
+            <Marks />
           </div>
         )}
 

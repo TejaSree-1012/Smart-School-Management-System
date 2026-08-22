@@ -178,6 +178,7 @@ onChange={handleChange}
 required
 />
 
+<label>Enter Date of Birth</label>
 <input
 type="date"
 name="dob"

@@ -7,7 +7,7 @@ import {
   FaThLarge, 
   FaUserTie, 
   FaClipboardList,
-  FaCog,
+  
   FaSignOutAlt,
   FaChevronLeft,
   FaChevronRight,
@@ -15,23 +15,32 @@ import {
   FaClock,
   FaCalendarCheck,
   FaCalendarAlt,
-  FaBook
+  FaBook,
+  FaLayerGroup
 } from "react-icons/fa";
 
 type SidebarProps = {
   collapsed: boolean
+  role?: "admin" | "principal"
 }
 
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: FaThLarge },
-  { href: "/admin/admissions", label: "Admissions", icon: FaClipboardList },
-  { href: "/admin/attendance", label: "Attendance", icon: FaCalendarCheck },
-  { href: "/admin/marks", label: "Marks", icon: FaBook },
-  { href: "/admin/timetable", label: "Timetable", icon: FaClock },
-]
-
-export default function Sidebar({ collapsed }: SidebarProps) {
+export default function Sidebar({ collapsed, role = "admin" }: SidebarProps) {
   const pathname = usePathname()
+  const basePath = role === "principal" ? "/principal" : "/admin"
+  
+  const navItems = [
+    { href: `${basePath}/dashboard`, label: "Dashboard", icon: FaThLarge },
+    { href: `${basePath}/admissions`, label: "Admissions", icon: FaClipboardList },
+    { href: `${basePath}/teacher-assignment`, label: "Teacher Assignment", icon: FaLayerGroup },
+    { href: `${basePath}/attendance`, label: "Attendance", icon: FaCalendarCheck },
+    { href: `${basePath}/marks`, label: "Marks", icon: FaBook },
+    { href: `${basePath}/timetable`, label: "Timetable", icon: FaClock },
+  ]
+  
+  const portalTitle = role === "principal" ? "Principal Portal" : "Admin Portal"
+  const userName = role === "principal" ? "Principal" : "Administrator"
+  const userRole = role === "principal" ? "Principal" : "Super Admin"
+  const avatarLetter = role === "principal" ? "P" : "A"
 
   return (
     <div className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
@@ -42,7 +51,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         {!collapsed && (
           <div className={styles.logoText}>
             <span className={styles.logoTitle}>Smart School</span>
-            <span className={styles.logoSubtitle}>Admin Portal</span>
+            <span className={styles.logoSubtitle}>{portalTitle}</span>
           </div>
         )}
       </div>
@@ -70,30 +79,18 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           })}
         </div>
 
-        <div className={styles.navSection}>
-          {!collapsed && <span className={styles.navLabel}>Settings</span>}
-          <Link 
-            href="/admin/settings" 
-            className={styles.navItem}
-            title={collapsed ? "Settings" : ""}
-          >
-            <span className={styles.navIcon}>
-              <FaCog />
-            </span>
-            {!collapsed && <span className={styles.navText}>Settings</span>}
-          </Link>
-        </div>
+        
       </nav>
 
       <div className={styles.sidebarFooter}>
         <div className={styles.adminInfo}>
           <div className={styles.adminAvatar}>
-            <span>A</span>
+            <span>{avatarLetter}</span>
           </div>
           {!collapsed && (
             <div className={styles.adminDetails}>
-              <span className={styles.adminName}>Administrator</span>
-              <span className={styles.adminRole}>Super Admin</span>
+              <span className={styles.adminName}>{userName}</span>
+              <span className={styles.adminRole}>{userRole}</span>
             </div>
           )}
         </div>

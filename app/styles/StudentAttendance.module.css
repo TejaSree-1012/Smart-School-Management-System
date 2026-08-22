@@ -1,0 +1,1017 @@
+.container {
+  padding: 32px;
+  max-width: 1400px;
+}
+
+.pageHeader {
+  margin-bottom: 32px;
+}
+
+.headerCard {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+  border-radius: 20px;
+  padding: 28px 32px;
+  color: #ffffff;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-shadow: 0 10px 40px rgba(30, 58, 95, 0.3);
+  z-index: 100;
+}
+
+.controlsSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.childSwitchLabel,
+.termFilter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  padding: 8px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+}
+
+.filterBtn.filterActive {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+  border-color: #1e3a5f;
+  color: #ffffff;
+}
+
+.headerCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(245, 158, 11, 0.1) 100%);
+  pointer-events: none;
+}
+
+.headerCard::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -5%;
+  width: 200px;
+  height: 200px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.headerLeft {
+  position: relative;
+  z-index: 1;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.breadcrumbIcon {
+  font-size: 14px;
+  color: #f59e0b;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.dateTimeBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.dateBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #e2e8f0;
+}
+
+.dateIcon {
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.warningBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.warningBanner svg {
+  font-size: 18px;
+  color: #f59e0b;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.percentageCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.percentageHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.percentageIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #22c55e;
+}
+
+.percentageHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.percentageDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.percentageCircle {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.percentageSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.percentageProgress {
+  transition: stroke-dasharray 1.5s ease-out;
+}
+
+.percentageValue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.percentageNumber {
+  font-size: 42px;
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+
+.percentageLabel {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.percentageMessage {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.percentageStats {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 20px;
+}
+
+.miniStat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.miniStat strong {
+  color: #1e293b;
+}
+
+.summaryCards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.summaryCard:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.summaryIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.summaryIcon.green {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  color: #22c55e;
+}
+
+.summaryIcon.red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #ef4444;
+}
+
+.summaryIcon.blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  color: #3b82f6;
+}
+
+.summaryContent {
+  flex: 1;
+}
+
+.summaryLabel {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.studentInfo {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.studentAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #f59e0b;
+}
+
+.studentDetails h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.studentDetails p {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.calendarSection {
+  margin-bottom: 28px;
+}
+
+.sectionCard {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 28px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.sectionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.sectionIcon.green {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  color: #22c55e;
+}
+
+.sectionIcon.red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #ef4444;
+}
+
+.sectionIcon.blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  color: #3b82f6;
+}
+
+.sectionInfo h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.sectionInfo p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+.monthNavigation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #3b82f6;
+}
+
+.navBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.currentMonth {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  min-width: 140px;
+  text-align: center;
+}
+
+.calendarLegend {
+  display: flex;
+  gap: 24px;
+  padding: 16px 28px;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.presentLegend {
+  background: #22c55e;
+}
+
+.lateLegend {
+  background: #f59e0b;
+}
+
+.absentLegend {
+  background: #ef4444;
+}
+
+.excusedLegend {
+  background: #8b5cf6;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 24px 28px;
+}
+
+.calendarHeader {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 0;
+}
+
+.calendarDayEmpty {
+  aspect-ratio: 1;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.calendarDay:hover {
+  background: #f1f5f9;
+}
+
+.calendarDay.today {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.calendarDay.present {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: #22c55e;
+}
+
+.calendarDay.late {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+  border-color: #f59e0b;
+}
+
+.calendarDay.absent {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border-color: #ef4444;
+}
+
+.calendarDay.excused {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-color: #8b5cf6;
+}
+
+.dayNumber {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.statusBadge {
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.presentBadge {
+  color: #16a34a;
+}
+
+.lateBadge {
+  color: #d97706;
+}
+
+.absentBadge {
+  color: #dc2626;
+}
+
+.excusedBadge {
+  color: #7c3aed;
+}
+
+.monthSummary {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px 28px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+}
+
+.monthSummaryItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.monthSummaryItem strong {
+  color: #1e293b;
+}
+
+.absentSection {
+  margin-bottom: 28px;
+}
+
+.absentDaysList {
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.absentDayItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.02) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+}
+
+.absentDate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.absentDate svg {
+  font-size: 16px;
+}
+
+.absentSection .absentBadge {
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: #64748b;
+}
+
+@media (max-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .headerCard {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .calendarGrid {
+    padding: 16px;
+    gap: 4px;
+  }
+
+  .calendarDay {
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .monthSummary {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .percentageCircle {
+    width: 150px;
+    height: 150px;
+  }
+
+  .percentageNumber {
+    font-size: 36px;
+  }
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.errorContainer h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.errorContainer p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 2px dashed #e2e8f0;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.emptyContainer h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.emptyContainer p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summaryHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.summaryStats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.summaryStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryStatItem .summaryLabel {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.summaryStatItem .summaryValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.subjectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.subjectCard {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.subjectCard:hover {
+  border-color: #3b82f6;
+}
+
+.subjectCard.subjectExpanded {
+  border-color: #3b82f6;
+}
+
+.subjectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.subjectHeader h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.subjectHeader p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.subjectPercentage {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.examsList {
+  padding: 0 16px 16px 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.termSection {
+  margin-top: 12px;
+}
+
+.termSection .termTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 8px 0;
+}
+
+.examItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.examItem .examInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.examItem .examType {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.examItem .examDate {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.examMarks {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.examMarks .marksValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.examMarks .marksTotal {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.errorContainer h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.errorContainer p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}

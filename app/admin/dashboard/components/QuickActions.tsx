@@ -4,39 +4,50 @@ import { useRouter } from "next/navigation"
 import { FaUserPlus, FaChalkboardTeacher, FaClipboardList, FaUserTie } from "react-icons/fa"
 import styles from "@/app/styles/QuickActions.module.css"
 
-export default function QuickActions() {
-  const router = useRouter()
+type QuickActionsProps = {
+  role?: "admin" | "principal"
+}
 
-  const actions = [
+export default function QuickActions({ role = "admin" }: QuickActionsProps) {
+  const router = useRouter()
+  const basePath = role === "principal" ? "/principal" : "/admin"
+
+  let actions = [
     {
       title: "Add Teacher",
       description: "Hire new teacher",
       icon: <FaChalkboardTeacher />,
       color: "green",
-      link: "/admin/teachers"
+      link: `${basePath}/teachers`
     },
     {
       title: "Add Parent",
       description: "Register parent account",
       icon: <FaUserPlus />,
       color: "purple",
-      link: "/admin/parents"
+      link: `${basePath}/parents`
     },
     {
       title: "Admission",
       description: "View admission requests",
       icon: <FaClipboardList />,
       color: "orange",
-      link: "/admin/admissions"
-    },
-    {
-      title: "Principal",
-      description: "Manage principal",
-      icon: <FaUserTie />,
-      color: "red",
-      link: "/admin/principal"
+      link: `${basePath}/admissions`
     }
   ]
+
+  if (role === "admin") {
+    actions = [
+      ...actions,
+      {
+        title: "Principal",
+        description: "Manage principal",
+        icon: <FaUserTie />,
+        color: "red",
+        link: `${basePath}/principal`
+      }
+    ]
+  }
 
   return (
     <div className={styles.container}>

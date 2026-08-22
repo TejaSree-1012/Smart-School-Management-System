@@ -16,6 +16,11 @@ useEffect(() => {
       const res = await fetch("/api/auth/me", { credentials: "include" })
       if (!res.ok) {
         router.push("/login/admin")
+        return
+      }
+      const data = await res.json()
+      if (!data.user || data.user.role !== "admin") {
+        router.push("/login/admin")
       }
     } catch {
       router.push("/login/admin")

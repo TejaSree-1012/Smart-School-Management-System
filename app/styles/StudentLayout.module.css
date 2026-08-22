@@ -1,0 +1,58 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.main {
+  margin-left: 280px;
+  flex: 1;
+  min-height: 100vh;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mainExpanded {
+  margin-left: 80px;
+}
+
+.toggleBtn {
+  position: fixed;
+  left: 280px;
+  top: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.toggleBtn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.toggleCollapsed {
+  left: 80px;
+}
+
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 0;
+  }
+
+  .mainExpanded {
+    margin-left: 0;
+  }
+
+  .toggleBtn {
+    display: none;
+  }
+}

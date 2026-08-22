@@ -3,6 +3,7 @@ import connectDB from "@/app/lib/mongodb"
 import Teacher from "@/app/models/Teacher"
 import bcrypt from "bcryptjs"
 import nodemailer from "nodemailer"
+import { requireAdmin } from "@/app/lib/auth"
 
 async function sendTeacherCredentials(email: string, name: string, password: string, teacherId: string) {
   try {
@@ -82,7 +83,6 @@ function generateTeacherId() {
 }
 
 export async function GET(){
-
   await connectDB()
 
   const teachers = await Teacher.find().sort({ createdAt: -1 }).lean()
@@ -93,11 +93,13 @@ export async function GET(){
   }))
 
   return NextResponse.json(teachersWithStringId)
-
 }
 
 export async function POST(req: Request) {
   try {
+    const auth = await requireAdmin(req);
+    if (auth.error) return auth.error;
+
     await connectDB()
 
     const body = await req.json()
