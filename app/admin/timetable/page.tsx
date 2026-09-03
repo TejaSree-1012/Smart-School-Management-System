@@ -48,16 +48,55 @@ const CLASSES = [
   "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
 ];
 
-const DEFAULT_PERIODS = (): Period[] => [
-  { periodNumber: 1, startTime: "08:00", endTime: "08:45", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 2, startTime: "08:45", endTime: "09:30", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 3, startTime: "09:30", endTime: "09:45", subject: "Break", teacherName: "", roomNumber: "", isBreak: true },
-  { periodNumber: 4, startTime: "09:45", endTime: "10:30", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 5, startTime: "10:30", endTime: "11:15", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 6, startTime: "11:15", endTime: "12:00", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 7, startTime: "12:00", endTime: "12:45", subject: "", teacherName: "", roomNumber: "", isBreak: false },
-  { periodNumber: 8, startTime: "12:45", endTime: "13:30", subject: "Lunch Break", teacherName: "", roomNumber: "", isBreak: true },
-];
+// Default homeroom per class — auto-filled when a period is added/edited,
+// but admin can still override it manually per period (e.g. Computer Lab, PE ground).
+const CLASS_ROOMS: Record<string, string> = {
+  "Nursery": "N-1",
+  "LKG": "N-2",
+  "UKG": "N-3",
+  "Class 1": "101",
+  "Class 2": "102",
+  "Class 3": "103",
+  "Class 4": "104",
+  "Class 5": "105",
+  "Class 6": "201",
+  "Class 7": "202",
+  "Class 8": "203",
+  "Class 9": "204",
+  "Class 10": "205"
+};
+
+// Subjects offered per class — keeps the Subject field to a controlled
+// list instead of free text, matching what teachers are actually assigned.
+const CLASS_SUBJECTS: Record<string, string[]> = {
+  "Nursery": ["Rhymes", "Drawing", "Numbers", "Alphabet", "General Awareness", "Physical Education"],
+  "LKG": ["English", "Hindi", "Mathematics", "EVS", "Drawing", "Physical Education"],
+  "UKG": ["English", "Hindi", "Mathematics", "EVS", "Computer", "Physical Education"],
+  "Class 1": ["English", "Hindi", "Mathematics", "EVS", "Computer", "Art"],
+  "Class 2": ["English", "Hindi", "Mathematics", "EVS", "Computer", "Art"],
+  "Class 3": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Computer"],
+  "Class 4": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Computer"],
+  "Class 5": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Computer"],
+  "Class 6": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Sanskrit"],
+  "Class 7": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Sanskrit"],
+  "Class 8": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Sanskrit"],
+  "Class 9": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Computer"],
+  "Class 10": ["English", "Hindi", "Mathematics", "Science", "Social Science", "Computer"]
+};
+
+const DEFAULT_PERIODS = (className?: string): Period[] => {
+  const room = className ? (CLASS_ROOMS[className] || "") : "";
+  return [
+    { periodNumber: 1, startTime: "08:00", endTime: "08:45", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 2, startTime: "08:45", endTime: "09:30", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 3, startTime: "09:30", endTime: "09:45", subject: "Break", teacherName: "", roomNumber: "", isBreak: true },
+    { periodNumber: 4, startTime: "09:45", endTime: "10:30", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 5, startTime: "10:30", endTime: "11:15", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 6, startTime: "11:15", endTime: "12:00", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 7, startTime: "12:00", endTime: "12:45", subject: "", teacherName: "", roomNumber: room, isBreak: false },
+    { periodNumber: 8, startTime: "12:45", endTime: "13:30", subject: "Lunch Break", teacherName: "", roomNumber: "", isBreak: true },
+  ];
+};
 
 export default function TimetableManagement() {
   const [loading, setLoading] = useState(true);
@@ -69,6 +108,7 @@ export default function TimetableManagement() {
   const [saving, setSaving] = useState(false);
   const [periods, setPeriods] = useState<Period[]>(DEFAULT_PERIODS());
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [periodTeacherOptions, setPeriodTeacherOptions] = useState<Record<number, { _id: string; name: string }[]>>({});
 
   const showMessage = (text: string, type: "success" | "error") => {
     setMessage({ text, type });
@@ -111,7 +151,8 @@ export default function TimetableManagement() {
 
   function handleAddNew() {
     setEditingTimetable(null);
-    setPeriods(DEFAULT_PERIODS());
+    setPeriods(DEFAULT_PERIODS(selectedClass));
+    setPeriodTeacherOptions({});
     setShowModal(true);
   }
 
@@ -124,8 +165,9 @@ export default function TimetableManagement() {
       setPeriods(currentTimetable.periods);
     } else {
       setEditingTimetable(null);
-      setPeriods(DEFAULT_PERIODS());
+      setPeriods(DEFAULT_PERIODS(selectedClass));
     }
+    setPeriodTeacherOptions({});
     setShowModal(true);
   }
 
@@ -135,13 +177,26 @@ export default function TimetableManagement() {
       return;
     }
 
+    // Only keep periods that are either a break, or have a subject filled in.
+    // This lets admin save with just Period 1 filled and leave the rest for later,
+    // instead of being forced to complete every period before the first save.
+    const cleanedPeriods = periods.filter(
+      (p) => p.isBreak || (p.subject && p.subject.trim() !== "")
+    );
+
+    if (cleanedPeriods.length === 0) {
+      showMessage("Please fill in at least one period before saving", "error");
+      return;
+    }
+
     try {
       setSaving(true);
 
       const timetableData = {
+        ...(editingTimetable?._id && { id: editingTimetable._id }),
         className: selectedClass,
         dayOfWeek: selectedDay,
-        periods: periods,
+        periods: cleanedPeriods,
         academicYear: new Date().getFullYear().toString()
       };
 
@@ -164,7 +219,11 @@ export default function TimetableManagement() {
         fetchTimetables();
       } else {
         const errorData = await res.json();
-        showMessage(errorData.message || "Failed to save timetable", "error");
+        if (errorData.conflicts && Array.isArray(errorData.conflicts)) {
+          showMessage(errorData.conflicts.join(" | "), "error");
+        } else {
+          showMessage(errorData.message || "Failed to save timetable", "error");
+        }
       }
     } catch (error) {
       console.error("Error saving timetable:", error);
@@ -195,6 +254,25 @@ export default function TimetableManagement() {
     }
   }
 
+  async function fetchTeachersForPeriod(index: number, subject: string) {
+    if (!subject || subject.trim() === "" || !selectedClass) {
+      setPeriodTeacherOptions(prev => ({ ...prev, [index]: [] }));
+      return;
+    }
+    try {
+      const res = await fetch(
+        `/api/teachers/by-assignment?className=${encodeURIComponent(selectedClass)}&subject=${encodeURIComponent(subject.trim())}`,
+        { credentials: "include" }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setPeriodTeacherOptions(prev => ({ ...prev, [index]: data.teachers || [] }));
+      }
+    } catch (error) {
+      console.error("Error fetching teachers:", error);
+    }
+  }
+
   function updatePeriod(index: number, field: keyof Period, value: string | boolean) {
     const updated = [...periods];
     updated[index] = { ...updated[index], [field]: value };
@@ -206,7 +284,15 @@ export default function TimetableManagement() {
         updated[index].roomNumber = "";
       } else {
         updated[index].subject = "";
+        updated[index].roomNumber = CLASS_ROOMS[selectedClass] || "";
       }
+    }
+
+    // If subject changes, the previously selected teacher is no longer
+    // guaranteed valid, so clear it and refresh the dropdown options.
+    if (field === "subject") {
+      updated[index].teacherName = "";
+      fetchTeachersForPeriod(index, String(value));
     }
 
     setPeriods(updated);
@@ -219,7 +305,7 @@ export default function TimetableManagement() {
       endTime: "14:45",
       subject: "",
       teacherName: "",
-      roomNumber: "",
+      roomNumber: CLASS_ROOMS[selectedClass] || "",
       isBreak: false
     };
     setPeriods([...periods, newPeriod]);
@@ -477,24 +563,51 @@ export default function TimetableManagement() {
                           />
                         </div>
 
-                        <input
-                          type="text"
-                          className={styles.formInput}
-                          value={period.subject}
-                          onChange={(e) => updatePeriod(index, "subject", e.target.value)}
-                          placeholder={period.isBreak ? "Break Name" : "Subject"}
-                          disabled={period.isBreak}
-                        />
+                        {period.isBreak ? (
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            value={period.subject}
+                            onChange={(e) => updatePeriod(index, "subject", e.target.value)}
+                            placeholder="Break Name"
+                            disabled
+                          />
+                        ) : (
+                          <select
+                            className={styles.formInput}
+                            value={period.subject}
+                            onChange={(e) => updatePeriod(index, "subject", e.target.value)}
+                          >
+                            <option value="">
+                              {selectedClass ? "Select Subject" : "Select a class first"}
+                            </option>
+                            {(CLASS_SUBJECTS[selectedClass] || []).map((subj) => (
+                              <option key={subj} value={subj}>
+                                {subj}
+                              </option>
+                            ))}
+                          </select>
+                        )}
 
                         {!period.isBreak && (
                           <>
-                            <input
-                              type="text"
+                            <select
                               className={styles.formInput}
                               value={period.teacherName}
                               onChange={(e) => updatePeriod(index, "teacherName", e.target.value)}
-                              placeholder="Teacher Name"
-                            />
+                              onFocus={() => fetchTeachersForPeriod(index, period.subject)}
+                            >
+                              <option value="">
+                                {(periodTeacherOptions[index] || []).length === 0
+                                  ? "Select subject first"
+                                  : "Select Teacher"}
+                              </option>
+                              {(periodTeacherOptions[index] || []).map((t) => (
+                                <option key={t._id} value={t.name}>
+                                  {t.name}
+                                </option>
+                              ))}
+                            </select>
                             <input
                               type="text"
                               className={styles.formInput}

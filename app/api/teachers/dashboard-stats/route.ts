@@ -62,7 +62,9 @@ export async function GET(request: Request) {
         }).lean();
       }
 
+        
       for (const tt of timetables) {
+        if (!tt.periods || !Array.isArray(tt.periods)) continue;
         for (const period of tt.periods) {
           if (period.teacherName === teacher.name && !period.isBreak) {
             todaySchedule.push({
