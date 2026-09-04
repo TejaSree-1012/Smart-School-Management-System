@@ -16,7 +16,8 @@ import {
   FaCalendarCheck,
   FaCalendarAlt,
   FaBook,
-  FaLayerGroup
+  FaLayerGroup,
+  FaMoneyBillWave
 } from "react-icons/fa";
 
 type SidebarProps = {
@@ -35,6 +36,7 @@ export default function Sidebar({ collapsed, role = "admin" }: SidebarProps) {
     { href: `${basePath}/attendance`, label: "Attendance", icon: FaCalendarCheck },
     { href: `${basePath}/marks`, label: "Marks", icon: FaBook },
     { href: `${basePath}/timetable`, label: "Timetable", icon: FaClock },
+    { href: `${basePath}/fees`, label: "Fees", icon: FaMoneyBillWave },
   ]
   
   const portalTitle = role === "principal" ? "Principal Portal" : "Admin Portal"

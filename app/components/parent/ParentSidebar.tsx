@@ -8,7 +8,8 @@ import {
   FaCalendarAlt,
   FaChartLine, 
   FaClipboardCheck, 
-  FaUsers
+  FaUsers,
+  FaMoneyBillWave
 } from "react-icons/fa";
 import styles from "@/app/styles/StudentSidebar.module.css";
 
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/parent/timetable", label: "Timetable", icon: FaCalendarAlt },
   { href: "/parent/marks", label: "Marks", icon: FaChartLine },
   { href: "/parent/attendance", label: "Attendance", icon: FaClipboardCheck },
+  { href: "/parent/fees", label: "Fees", icon: FaMoneyBillWave },
 ];
 
 export default function ParentSidebar({ collapsed }: SidebarProps) {
