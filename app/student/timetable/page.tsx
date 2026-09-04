@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaCalendarAlt, FaDoorOpen, FaUser, FaBook, FaHome } from "react-icons/fa";
 import styles from "@/app/styles/StudentTimetable.module.css";
+import TimetableSkeleton from "@/app/components/ui/TimetableSkeleton";
 
 interface Period {
   _id?: string;
@@ -138,12 +139,7 @@ export default function StudentTimetable() {
       </div>
 
       {loading ? (
-        <div className={styles.timetableWrapper}>
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingSpinner}></div>
-            <p className={styles.loadingText}>Loading timetables...</p>
-          </div>
-        </div>
+        <TimetableSkeleton />
       ) : !currentTimetable ? (
         <div className={styles.timetableWrapper}>
           <div className={styles.emptyState}>

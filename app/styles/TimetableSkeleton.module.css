@@ -1,0 +1,174 @@
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f8fafc 25%,
+    #ffffff 50%,
+    #f8fafc 75%,
+    #e2e8f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.timetableSkeletonWrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.timetableSkeletonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.timetableSkeletonInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.skeletonIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.skeletonMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeletonTitle {
+  width: 180px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.skeletonSubtitle {
+  width: 230px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.skeletonStats {
+  display: flex;
+  gap: 16px;
+}
+
+.skeletonStatCard {
+  width: 76px;
+  height: 54px;
+  border-radius: 10px;
+}
+
+.skeletonPeriodsContainer {
+  padding: 24px;
+}
+
+.skeletonPeriodsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.skeletonPeriodCard {
+  display: flex;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  height: 90px;
+  overflow: hidden;
+}
+
+.skeletonTimeBox {
+  width: 85px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.skeletonPeriodNum {
+  width: 48px;
+  height: 10px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+
+.skeletonPeriodTime {
+  width: 65px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.skeletonContentBox {
+  flex: 1;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.skeletonSubject {
+  width: 60%;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.skeletonDetailsRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.skeletonDetail {
+  width: 75px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.skeletonDetailShort {
+  width: 55px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+@media (max-width: 1024px) {
+  .skeletonPeriodsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .timetableSkeletonHeader {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .skeletonPeriodsGrid {
+    grid-template-columns: 1fr;
+  }
+}

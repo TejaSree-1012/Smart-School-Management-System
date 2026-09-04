@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaCalendarAlt, FaDoorOpen, FaUser, FaGraduationCap, FaBook } from "react-icons/fa";
+import { FaCalendarAlt, FaDoorOpen, FaUser, FaGraduationCap } from "react-icons/fa";
 import styles from "@/app/styles/TeacherTimetable.module.css";
+import TimetableSkeleton from "@/app/components/ui/TimetableSkeleton";
 
 interface Period {
   _id?: string;
@@ -130,12 +131,7 @@ export default function TeacherTimetable() {
       </div>
 
       {loading ? (
-        <div className={styles.timetableWrapper}>
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingSpinner}></div>
-            <p className={styles.loadingText}>Loading timetables...</p>
-          </div>
-        </div>
+        <TimetableSkeleton />
       ) : selectedDayTimetables.length === 0 ? (
         <div className={styles.timetableWrapper}>
           <div className={styles.emptyState}>

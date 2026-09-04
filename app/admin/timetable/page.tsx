@@ -13,6 +13,7 @@ import {
   FaCheck
 } from "react-icons/fa";
 import styles from "@/app/styles/TimetableManagement.module.css";
+import TimetableSkeleton from "@/app/components/ui/TimetableSkeleton";
 
 interface Period {
   _id?: string;
@@ -381,12 +382,7 @@ export default function TimetableManagement() {
       </div>
 
       {loading ? (
-        <div className={styles.timetableWrapper}>
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingSpinner}></div>
-            <p className={styles.loadingText}>Loading timetables...</p>
-          </div>
-        </div>
+        <TimetableSkeleton />
       ) : !selectedClass ? (
         <div className={styles.timetableWrapper}>
           <div className={styles.emptyState}>
