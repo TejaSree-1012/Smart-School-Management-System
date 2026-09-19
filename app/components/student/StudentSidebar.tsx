@@ -9,7 +9,8 @@ import {
   FaCalendarAlt,
   FaChartLine, 
   FaClipboardCheck, 
-  FaSchool
+  FaSchool,
+  FaQuestionCircle
 } from "react-icons/fa";
 import styles from "@/app/styles/StudentSidebar.module.css";
 
@@ -28,6 +29,9 @@ const navItems = [
   { href: "/student/timetable", label: "Timetable", icon: FaCalendarAlt },
   { href: "/student/marks", label: "Marks", icon: FaChartLine },
   { href: "/student/attendance", label: "Attendance", icon: FaClipboardCheck },
+  { href: "/student/quiz", label: "Quiz", icon: FaQuestionCircle },
+  
+
 ];
 
 export default function StudentSidebar({ collapsed }: SidebarProps) {

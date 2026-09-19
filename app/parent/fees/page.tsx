@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaMoneyBillWave, FaTimes, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { FaMoneyBillWave, FaTimes, FaCheckCircle, FaExclamationCircle, FaDownload } from "react-icons/fa";
 import styles from "@/app/styles/FeeManagement.module.css"; // Reuse the same styles
 
 export default function ParentFeeManagement() {
@@ -146,6 +146,7 @@ export default function ParentFeeManagement() {
                           <th style={{ padding: "12px", textAlign: "left", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Fee Type</th>
                           <th style={{ padding: "12px", textAlign: "left", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Mode</th>
                           <th style={{ padding: "12px", textAlign: "right", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Amount</th>
+                          <th style={{ padding: "12px", textAlign: "center", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Receipt</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -156,6 +157,17 @@ export default function ParentFeeManagement() {
                             <td style={{ padding: "12px", fontSize: "14px", fontWeight: 600 }}>{p.feeType}</td>
                             <td style={{ padding: "12px", fontSize: "14px" }}>{p.paymentMode}</td>
                             <td style={{ padding: "12px", textAlign: "right", fontSize: "14px", fontWeight: 600, color: "#22c55e" }}>{formatMoney(p.amountPaid)}</td>
+                            <td style={{ padding: "12px", textAlign: "center" }}>
+                              
+                               <a href={`/api/parent/fee-payments/${p._id}/receipt`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#2563eb", fontWeight: 600, textDecoration: "none", fontSize: "13px" }}
+                                title="Download Receipt"
+                              >
+                              <FaDownload /> Download
+                              </a>
+                            </td>
                           </tr>
                         ))}
                       </tbody>

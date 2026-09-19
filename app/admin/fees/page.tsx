@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaMoneyBillWave, FaSave, FaTimes, FaPlus, FaSearch, FaHistory, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { FaMoneyBillWave, FaSave, FaTimes, FaPlus, FaSearch, FaHistory, FaCheckCircle, FaExclamationCircle, FaDownload } from "react-icons/fa";
 import styles from "@/app/styles/FeeManagement.module.css";
 
 const CLASSES = [
@@ -15,7 +15,7 @@ const FEE_TYPES = ["Tuition", "Transport", "Lab", "Exam", "Library", "Sports", "
 const PAYMENT_MODES = ["Cash", "Online", "Cheque", "Card"];
 
 export default function AdminFeeManagement() {
-  const [activeTab, setActiveTab] = useState<"structure" | "payments">("structure");
+  const [activeTab, setActiveTab] = useState<"structure" | "payments" | "report">("structure");
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>(new Date().getFullYear().toString());
   
@@ -47,6 +47,13 @@ export default function AdminFeeManagement() {
   const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<any>(null);
   const [studentHistory, setStudentHistory] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
+
+  // Tab 3 state - Pending Dues Report
+  const [reportYear, setReportYear] = useState<string>(new Date().getFullYear().toString());
+  const [reportData, setReportData] = useState<any[]>([]);
+  const [reportLoaded, setReportLoaded] = useState(false);
+  const [loadingReport, setLoadingReport] = useState(false);
+  const [reportSearch, setReportSearch] = useState("");
 
   const showMessage = (text: string, type: "success" | "error") => {
     setMessage({ text, type });
@@ -217,6 +224,68 @@ export default function AdminFeeManagement() {
     );
   }, [feeSummary, searchQuery]);
 
+  const loadPendingDuesReport = async () => {
+    if (!reportYear.trim()) {
+      showMessage("Please enter an academic year", "error");
+      return;
+    }
+    try {
+      setLoadingReport(true);
+      setReportLoaded(false);
+      const res = await fetch(`/api/admin/fee-pending-report?academicYear=${encodeURIComponent(reportYear)}`, {
+        credentials: "include"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setReportData(data);
+        setReportLoaded(true);
+      } else {
+        showMessage("Failed to load pending dues report", "error");
+      }
+    } catch (error) {
+      console.error("Error loading pending dues report", error);
+      showMessage("Failed to load pending dues report", "error");
+    } finally {
+      setLoadingReport(false);
+    }
+  };
+
+  const filteredReport = useMemo(() => {
+    return reportData.filter(r => 
+      r.studentName.toLowerCase().includes(reportSearch.toLowerCase()) ||
+      r.className.toLowerCase().includes(reportSearch.toLowerCase())
+    );
+  }, [reportData, reportSearch]);
+
+  const reportTotalBalance = useMemo(() => {
+    return filteredReport.reduce((sum, r) => sum + r.balance, 0);
+  }, [filteredReport]);
+
+  const handleExportReportCSV = () => {
+    const headers = ["Student Name", "Student ID", "Class", "Total Due", "Total Paid", "Balance", "Status"];
+    const csvData = filteredReport.map(s => [
+      s.studentName || "",
+      s.studentIdNumber || "",
+      s.className || "",
+      s.totalDue,
+      s.totalPaid,
+      s.balance,
+      s.status || ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...csvData.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `pending_dues_report_${reportYear}_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    showMessage("Pending dues report exported successfully", "success");
+  };
+
   return (
     <div className={styles.container}>
       <AnimatePresence>
@@ -277,6 +346,12 @@ export default function AdminFeeManagement() {
             onClick={() => setActiveTab("payments")}
           >
             Payments & Dues
+          </button>
+          <button 
+            className={`${styles.dayBtn} ${activeTab === "report" ? styles.active : ""}`}
+            onClick={() => setActiveTab("report")}
+          >
+            Pending Dues Report
           </button>
         </div>
       </div>
@@ -480,6 +555,134 @@ export default function AdminFeeManagement() {
         </motion.div>
       )}
 
+      {activeTab === "report" && (
+        <motion.div 
+          className={styles.timetableWrapper}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className={styles.timetableHeader}>
+            <div className={styles.timetableInfo}>
+              <div className={styles.timetableIcon}>
+                <FaExclamationCircle />
+              </div>
+              <div className={styles.timetableMeta}>
+                <h2>Pending Dues Report</h2>
+                <p>School-wide view of students with unpaid or partial fee balances</p>
+              </div>
+            </div>
+            {reportLoaded && filteredReport.length > 0 && (
+              <div className={styles.headerActions}>
+                <button className={styles.addBtn} onClick={handleExportReportCSV}>
+                  <FaDownload /> Export CSV
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.periodsContainer}>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 20 }}>
+              <div className={styles.controlGroup}>
+                <label className={styles.controlLabel}>Academic Year</label>
+                <input 
+                  type="text"
+                  className={styles.controlSelect}
+                  value={reportYear}
+                  onChange={(e) => setReportYear(e.target.value)}
+                  placeholder="e.g. 2026"
+                />
+              </div>
+              <button 
+                className={styles.addBtn}
+                onClick={loadPendingDuesReport}
+                disabled={loadingReport}
+              >
+                {loadingReport ? "Loading..." : "Load Report"}
+              </button>
+            </div>
+
+            {loadingReport ? (
+              <div className={styles.loadingContainer}>
+                <div className={styles.loadingSpinner}></div>
+                <div className={styles.loadingText}>Loading pending dues report...</div>
+              </div>
+            ) : !reportLoaded ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}><FaExclamationCircle /></div>
+                <h3 className={styles.emptyTitle}>No Report Loaded</h3>
+                <p className={styles.emptyText}>Select an academic year and click "Load Report" to see all students with pending dues across every class.</p>
+              </div>
+            ) : reportData.length === 0 ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}><FaCheckCircle /></div>
+                <h3 className={styles.emptyTitle}>No Pending Dues</h3>
+                <p className={styles.emptyText}>Every student has either paid in full or has no fee structure set for {reportYear}.</p>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+                  <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>
+                    {filteredReport.length} student{filteredReport.length !== 1 ? "s" : ""} with pending dues, totaling {formatMoney(reportTotalBalance)}
+                  </p>
+                  <div style={{ position: "relative" }}>
+                    <FaSearch style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+                    <input 
+                      type="text" 
+                      placeholder="Search student or class..." 
+                      className={styles.formInput}
+                      style={{ paddingLeft: 36, width: 250 }}
+                      value={reportSearch}
+                      onChange={(e) => setReportSearch(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 800 }}>
+                    <thead>
+                      <tr style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
+                        <th style={{ padding: "12px", textAlign: "left", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Student</th>
+                        <th style={{ padding: "12px", textAlign: "left", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Class</th>
+                        <th style={{ padding: "12px", textAlign: "right", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Total Due</th>
+                        <th style={{ padding: "12px", textAlign: "right", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Total Paid</th>
+                        <th style={{ padding: "12px", textAlign: "right", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Balance</th>
+                        <th style={{ padding: "12px", textAlign: "center", fontSize: "13px", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredReport.map((s, idx) => (
+                        <tr key={`${s.studentIdNumber}-${idx}`} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                          <td style={{ padding: "16px 12px" }}>
+                            <div style={{ fontWeight: 600, color: "#1e293b" }}>{s.studentName}</div>
+                            <div style={{ fontSize: "12px", color: "#64748b" }}>{s.studentIdNumber}</div>
+                          </td>
+                          <td style={{ padding: "16px 12px" }}>{s.className}</td>
+                          <td style={{ padding: "16px 12px", textAlign: "right", fontWeight: 600 }}>{formatMoney(s.totalDue)}</td>
+                          <td style={{ padding: "16px 12px", textAlign: "right", fontWeight: 600, color: "#22c55e" }}>{formatMoney(s.totalPaid)}</td>
+                          <td style={{ padding: "16px 12px", textAlign: "right", fontWeight: 700, color: "#ef4444" }}>{formatMoney(s.balance)}</td>
+                          <td style={{ padding: "16px 12px", textAlign: "center" }}>
+                            <span style={{
+                              padding: "4px 12px", 
+                              borderRadius: "12px", 
+                              fontSize: "12px", 
+                              fontWeight: 700,
+                              background: s.status === "Partial" ? "#fef9c3" : "#fee2e2",
+                              color: s.status === "Partial" ? "#854d0e" : "#991b1b"
+                            }}>
+                              {s.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+        </motion.div>
+      )}
+
       {/* Record Payment Modal */}
       <AnimatePresence>
         {showPaymentModal && (
@@ -623,6 +826,7 @@ export default function AdminFeeManagement() {
                         <th style={{ padding: "12px", textAlign: "left", fontSize: "12px", color: "#64748b", textTransform: "uppercase" }}>Fee Type</th>
                         <th style={{ padding: "12px", textAlign: "left", fontSize: "12px", color: "#64748b", textTransform: "uppercase" }}>Mode</th>
                         <th style={{ padding: "12px", textAlign: "right", fontSize: "12px", color: "#64748b", textTransform: "uppercase" }}>Amount</th>
+                        <th style={{ padding: "12px", textAlign: "center", fontSize: "12px", color: "#64748b", textTransform: "uppercase" }}>Receipt</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -642,6 +846,18 @@ export default function AdminFeeManagement() {
                           </td>
                           <td style={{ padding: "12px", textAlign: "right", fontSize: "14px", fontWeight: 600, color: "#22c55e" }}>
                             {formatMoney(record.amountPaid)}
+                          </td>
+                          <td style={{ padding: "12px", textAlign: "center" }}>
+                            
+                             <a href={`/api/admin/fee-payments/${record._id}/receipt`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.actionBtn}
+                              style={{ display: "inline-flex", textDecoration: "none" }}
+                              title="Download Receipt"
+                            >
+                              <FaDownload />
+                            </a>
                           </td>
                         </tr>
                       ))}

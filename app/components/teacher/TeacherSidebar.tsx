@@ -9,7 +9,8 @@ import {
   FaClipboardCheck,
   FaChartLine,
   FaUsers,
-  FaSchool
+  FaSchool,
+  FaQuestionCircle
 } from "react-icons/fa";
 import styles from "@/app/styles/TeacherSidebar.module.css";
 
@@ -23,6 +24,8 @@ const navItems = [
   { href: "/teacher/attendance", label: "Attendance", icon: FaClipboardCheck },
   { href: "/teacher/marks", label: "Marks", icon: FaChartLine },
   { href: "/teacher/students", label: "Students", icon: FaUsers },
+  { href: "/teacher/quiz", label: "Quiz", icon: FaQuestionCircle },
+
 ];
 
 export default function TeacherSidebar({ collapsed }: SidebarProps) {

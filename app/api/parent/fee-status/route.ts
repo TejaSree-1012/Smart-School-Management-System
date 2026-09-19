@@ -27,56 +27,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Derive current academic year the same way the rest of the codebase does
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const academicYear =
-      today.getMonth() >= 4
-        ? `${currentYear}-${currentYear + 1}`
-        : `${currentYear - 1}-${currentYear}`;
-
-    // Look up the parent record to find linked studentId(s)
-    // The Parent model stores a single studentId string
-    const parentRecord = await Parent.findOne({ email: payload.email }).lean();
-
-    let linkedStudentIds: string[] = [];
-
-    if (parentRecord) {
-      const p = parentRecord as { studentId?: string | string[] };
-      if (Array.isArray(p.studentId)) {
-        linkedStudentIds = p.studentId.filter(Boolean);
-      } else if (p.studentId) {
-        linkedStudentIds = [p.studentId];
-      }
-    }
-
-    // Fallback: if parentRecord not found or has no studentId, try payload fields
-    if (linkedStudentIds.length === 0) {
-      const pid = payload.studentId as string | undefined;
-      if (pid) {
-        linkedStudentIds = [pid];
-      }
-    }
-
-    if (linkedStudentIds.length === 0) {
-      return NextResponse.json(
-        { error: "No linked students found for this parent account" },
-        { status: 404 }
-      );
-    }
-
-    // Build fee status for each linked child
+     const academicYear=new Date().getFullYear().toString();
+        // Parent login uses the Student's own MongoDB _id as the JWT "id" —
+    // there's no separate Parent record lookup, it's derived directly
+    // from the Student document at login time (see app/api/auth/login/route.ts).
     const results = await Promise.all(
-      linkedStudentIds.map(async (sid) => {
-        // Resolve the student by their studentId string (same pattern as marks route)
-        const student = await Student.findOne({
-          studentId: new RegExp(`^${sid}$`, "i"),
-        }).lean();
+      [payload.id].map(async (studentMongoId) => {
+        const student = await Student.findById(studentMongoId).lean();
 
         if (!student) {
           return null;
         }
 
+ 
         const studentDoc = student as {
           _id: unknown;
           studentId: string;
@@ -123,6 +86,7 @@ export async function GET(request: Request) {
 
         const paymentHistory = (
           payments as {
+            _id: unknown;
             feeType: string;
             amountPaid: number;
             paymentDate: Date;
@@ -130,6 +94,7 @@ export async function GET(request: Request) {
             receiptNumber: string;
           }[]
         ).map((p) => ({
+          _id: String(p._id),
           feeType: p.feeType,
           amountPaid: p.amountPaid,
           paymentDate: p.paymentDate,

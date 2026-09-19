@@ -31,3 +31,13 @@ export async function requireTeacher(request: Request): Promise<{ user: { id: st
   }
   return { user };
 }
+export async function requireStudent(request: Request): Promise<{ user: { id: string; role: string }; error?: NextResponse }> {
+  const user = await getAuthUser(request);
+  if (!user) {
+    return { user: { id: "", role: "" }, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+  }
+  if (user.role !== "student") {
+    return { user, error: NextResponse.json({ error: "Forbidden: Students only" }, { status: 403 }) };
+  }
+  return { user };
+}
